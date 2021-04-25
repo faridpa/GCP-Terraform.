@@ -1,4 +1,6 @@
 # gcp-terraform
+Example of using Google Terraform module with impersonation of a service account.
+
 Steps:
 
 ```

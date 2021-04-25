@@ -1,4 +1,7 @@
 # gcp-terraform
+
+This Terraform code creates a folder, a project inside that folder. It also creates a service account for that project with IAM policies required for impersination.
+
 Steps:
 
 ```
