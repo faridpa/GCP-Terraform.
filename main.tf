@@ -4,11 +4,13 @@ resource "random_id" "id" {
 }
 
 resource "google_folder" "folder" {
+  // provider     = google-beta
   display_name = var.folder_name
   parent       = "organizations/${var.org_id}"
 }
 
 resource "google_project" "project" {
+  // provider        = google-beta
   name            = var.project_name
   project_id      = random_id.id.hex
   billing_account = var.billing_account
@@ -16,6 +18,7 @@ resource "google_project" "project" {
 }
 
 resource "google_project_service" "service" {
+  // provider = google-beta
   for_each = toset([
     "compute.googleapis.com",
     "cloudresourcemanager.googleapis.com",
@@ -30,6 +33,7 @@ resource "google_project_service" "service" {
 }
 
 resource "google_service_account" "prj-service-account" {
+  // provider     = google-beta
   account_id   = "${google_project.project.project_id}-sa"
   display_name = "Service Account for ${google_project.project.project_id} project"
   project      = google_project.project.project_id
@@ -37,6 +41,7 @@ resource "google_service_account" "prj-service-account" {
 }
 
 resource "google_service_account_iam_binding" "impersination-iam" {
+  // provider           = google-beta
   service_account_id = google_service_account.prj-service-account.name
   role               = "roles/iam.serviceAccountUser"
   members            = [
@@ -53,6 +58,7 @@ resource "google_service_account_iam_binding" "impersination-iam" {
 }
 
 resource "google_service_account_iam_binding" "token-creator-iam" {
+  // provider           = google-beta
   service_account_id = google_service_account.prj-service-account.name
   role               = "roles/iam.serviceAccountTokenCreator"
   members            = [
@@ -69,9 +75,10 @@ resource "google_service_account_iam_binding" "token-creator-iam" {
 }
 
 resource "google_project_iam_binding" "project" {
-  project = google_project.project.project_id
-  role    = "roles/editor"
-  members = [
+  // provider = google-beta
+  project  = google_project.project.project_id
+  role     = "roles/editor"
+  members  = [
     "serviceAccount:${google_service_account.prj-service-account.email}",
   ]
 //   condition {
