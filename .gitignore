@@ -4,7 +4,6 @@ terraform.*
 *.tfplan
 *.tfstate
 *.tfstate.*
-*.tfvars
 *.backup
 *.log
 *.bak
