@@ -11,14 +11,14 @@ terraform {
   }
 }
 
-provider "google" {
+provider "google-beta" {
   region  = var.region
   project = var.project_id
   zone    = var.region
   // alias = "google-beta"
 }
 
-provider "google" {
+provider "google-beta" {
   region  = var.region
   project = var.project_id
   zone    = var.region
