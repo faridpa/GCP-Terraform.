@@ -5,12 +5,11 @@ terraform {
       version = "3.65.0"
     }
   }
-  backend "gcs" {
-    bucket  = "tf-gcs--backend"
+  backend "local" {
   }
 }
 
-provider "google-beta" {
+provider "google" {
   alias   = "impersonating"
   region  = var.region
   project = var.project_id

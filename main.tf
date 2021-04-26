@@ -25,7 +25,8 @@ resource "google_project_service" "service" {
     "cloudbilling.googleapis.com",
     "iam.googleapis.com",
     "compute.googleapis.com",
-    "serviceusage.googleapis.com"
+    "serviceusage.googleapis.com",
+    "sqladmin.googleapis.com"
   ])
   service = each.key
   project            = google_project.project.project_id
