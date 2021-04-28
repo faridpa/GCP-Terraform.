@@ -9,4 +9,10 @@ module "postgresql" {
   tier                 = "db-f1-micro"
   deletion_protection  = false
   create_timeout       = "20m"
+  ip_configuration = {
+    ipv4_enabled        = true
+    private_network     = null
+    require_ssl         = false
+    authorized_networks = var.authorized_networks
+  }
 }
