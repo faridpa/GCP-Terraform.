@@ -1,5 +1,5 @@
 variable "project_id" {}
 variable "region" {}
 variable "target_service_account" {}
-variable "db_name" {}
-variable "authorized_networks" {}
+variable "pg_ha_name" {}
+variable "pg_ha_external_ip_range" {}

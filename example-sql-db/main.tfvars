@@ -1,6 +1,6 @@
 region = "us-west1"
-project_id = "project191145938"
-target_service_account = "project191145938-sa@project191145938.iam.gserviceaccount.com"
+project_id = "projectabcc79e26c4"
+target_service_account = "projectabcc79e26c4-sa@projectabcc79e26c4.iam.gserviceaccount.com"
 db_name = "my-first-db1"
 authorized_networks = [{
     name  = "all-internet"
