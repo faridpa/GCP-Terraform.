@@ -11,14 +11,16 @@ resource "mongodbatlas_cluster" "test" {
       read_only_nodes = 0
     }
   }
-  provider_backup_enabled      = true
-  auto_scaling_disk_gb_enabled = true
-  mongo_db_major_version       = "4.2"
+  mongo_db_major_version       = "4.4"
 
   //Provider Settings "block"
-  provider_name               = "GCP"
-  disk_size_gb                = 2
-  provider_instance_size_name = "R2"
+  provider_name                = "TENANT"
+  provider_region_name         = var.region
+  provider_backup_enabled      = false
+  provider_instance_size_name  = "M2"
+  backing_provider_name        = "GCP"
+  auto_scaling_disk_gb_enabled = false
+  disk_size_gb                 = 2
 }
 
 resource "mongodbatlas_database_user" "test" {
@@ -47,6 +49,12 @@ resource "mongodbatlas_project_ip_whitelist" "test" {
   project_id = mongodbatlas_project.project.id
   ip_address = var.mongodb_atlas_whitelistip
   comment    = "ip address for tf acc testing"
+}
+
+resource "mongodbatlas_project_ip_whitelist" "myip" {
+  project_id = mongodbatlas_project.project.id
+  ip_address = chomp(data.http.myip.body)
+  comment    = "IP Address for my home office"
 }
 
 resource "mongodbatlas_project" "project" {
