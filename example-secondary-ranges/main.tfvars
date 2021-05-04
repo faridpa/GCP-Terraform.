@@ -1,0 +1,8 @@
+project_id = "projectabcc79e26c4"
+network_name = "first-network"
+folder_name = "faridpasha"
+project_name = "faridabc"
+org_id = "392828863790"
+billing_account = "018BC9-549406-B7C8C3"
+target_service_account = "projectabcc79e26c4-sa@projectabcc79e26c4.iam.gserviceaccount.com"
+region = "us-west1"
