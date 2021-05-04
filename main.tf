@@ -26,7 +26,10 @@ resource "google_project_service" "service" {
     "iam.googleapis.com",
     "compute.googleapis.com",
     "serviceusage.googleapis.com",
-    "sqladmin.googleapis.com"
+    "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com",
+    "redis.googleapis.com",
+    "memcache.googleapis.com"
   ])
   service = each.key
   project            = google_project.project.project_id
@@ -79,6 +82,19 @@ resource "google_project_iam_binding" "project" {
   // provider = google-beta
   project  = google_project.project.project_id
   role     = "roles/editor"
+  members  = [
+    "serviceAccount:${google_service_account.prj-service-account.email}",
+  ]
+//   condition {
+//     title       = "expires_after_2019_12_31"
+//     description = "Expiring at midnight of 2019-12-31"
+//     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
+//   }
+}
+resource "google_project_iam_binding" "project1" {
+  // provider = google-beta
+  project  = google_project.project.project_id
+  role     = "roles/compute.networkAdmin"
   members  = [
     "serviceAccount:${google_service_account.prj-service-account.email}",
   ]
