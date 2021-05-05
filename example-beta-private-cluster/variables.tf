@@ -6,3 +6,4 @@ variable "network" {}
 variable "subnetwork" {}
 variable "ip_range_pods" {}
 variable "ip_range_services" {}
+variable "default_max_pods_per_node" {}
