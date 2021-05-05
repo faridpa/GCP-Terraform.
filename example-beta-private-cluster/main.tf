@@ -8,6 +8,7 @@ module "gke" {
   subnetwork                 = var.subnetwork
   ip_range_pods              = var.ip_range_pods
   ip_range_services          = var.ip_range_services
+  default_max_pods_per_node  = var.default_max_pods_per_node
   http_load_balancing        = true
   horizontal_pod_autoscaling = true
   network_policy             = false
@@ -19,7 +20,7 @@ module "gke" {
   dns_cache = false
   master_authorized_networks = [
     {
-      cidr_block = "10.1.0.0/16"
+      cidr_block = "10.10.10.0/24"
       display_name = "Private"
     }
     ]
