@@ -1,0 +1,8 @@
+project_id = "projectabcc79e26c4"
+region = "us-west1"
+target_service_account = "projectabcc79e26c4-sa@projectabcc79e26c4.iam.gserviceaccount.com"
+cluster_name = "maincluster"
+network = "vpc-01"
+subnetwork = "vpc-01-subnet-01"
+ip_range_pods = "pod-range"
+ip_range_services = "service-range"

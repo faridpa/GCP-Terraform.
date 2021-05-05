@@ -75,10 +75,24 @@ resource "google_service_account_iam_binding" "token-creator-iam" {
 //   }
 }
 
-resource "google_project_iam_binding" "project" {
+resource "google_project_iam_binding" "binding-iam-1" {
   // provider = google-beta
   project  = google_project.project.project_id
   role     = "roles/editor"
+  members  = [
+    "serviceAccount:${google_service_account.prj-service-account.email}",
+  ]
+//   condition {
+//     title       = "expires_after_2019_12_31"
+//     description = "Expiring at midnight of 2019-12-31"
+//     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
+//   }
+}
+
+resource "google_project_iam_binding" "binding-iam-2" {
+  // provider = google-beta
+  project  = google_project.project.project_id
+  role     = "roles/resourcemanager.projectIamAdmin"
   members  = [
     "serviceAccount:${google_service_account.prj-service-account.email}",
   ]
