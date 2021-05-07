@@ -29,6 +29,4 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.gke.ca_certificate)
 }
 
-provider "null" {
-  version = "~> 2.1"
-}
+provider "null" {}

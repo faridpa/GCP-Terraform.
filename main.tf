@@ -3,107 +3,107 @@ resource "random_id" "id" {
   prefix      = var.project_name
 }
 
-resource "google_folder" "folder" {
-  // provider     = google-beta
-  display_name = var.folder_name
-  parent       = "organizations/${var.org_id}"
-}
+# resource "google_folder" "folder" {
+#   // provider     = google-beta
+#   display_name = var.folder_name
+#   parent       = "organizations/${var.org_id}"
+# }
 
-resource "google_project" "project" {
-  // provider        = google-beta
-  name            = var.project_name
-  project_id      = random_id.id.hex
-  billing_account = var.billing_account
-  folder_id       = google_folder.folder.name
-}
+# resource "google_project" "project" {
+#   // provider        = google-beta
+#   name            = var.project_name
+#   project_id      = random_id.id.hex
+#   billing_account = var.billing_account
+#   folder_id       = google_folder.folder.name
+# }
 
-resource "google_project_service" "service" {
-  // provider = google-beta
-  for_each = toset([
-    "compute.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "cloudbilling.googleapis.com",
-    "iam.googleapis.com",
-    "compute.googleapis.com",
-    "serviceusage.googleapis.com",
-    "sqladmin.googleapis.com"
-  ])
-  service = each.key
-  project            = google_project.project.project_id
-  disable_on_destroy = false
-}
+# resource "google_project_service" "service" {
+#   // provider = google-beta
+#   for_each = toset([
+#     "compute.googleapis.com",
+#     "cloudresourcemanager.googleapis.com",
+#     "cloudbilling.googleapis.com",
+#     "iam.googleapis.com",
+#     "compute.googleapis.com",
+#     "serviceusage.googleapis.com",
+#     "sqladmin.googleapis.com"
+#   ])
+#   service = each.key
+#   project            = google_project.project.project_id
+#   disable_on_destroy = false
+# }
 
-resource "google_service_account" "prj-service-account" {
-  // provider     = google-beta
-  account_id   = "${google_project.project.project_id}-sa"
-  display_name = "Service Account for ${google_project.project.project_id} project"
-  project      = google_project.project.project_id
-  // depends_on   = [google_project_service.service]
-}
+# resource "google_service_account" "prj-service-account" {
+#   // provider     = google-beta
+#   account_id   = "${google_project.project.project_id}-sa"
+#   display_name = "Service Account for ${google_project.project.project_id} project"
+#   project      = google_project.project.project_id
+#   // depends_on   = [google_project_service.service]
+# }
 
-resource "google_service_account_iam_binding" "impersination-iam" {
-  // provider           = google-beta
-  service_account_id = google_service_account.prj-service-account.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = [
-    "serviceAccount:${var.target_service_account}",
-    "user:devops@integraldevops.com",
-    "user:farid@integraldevops.com",
-    "user:osman@integraldevops.com",
-  ]
+# resource "google_service_account_iam_binding" "impersination-iam" {
+#   // provider           = google-beta
+#   service_account_id = google_service_account.prj-service-account.name
+#   role               = "roles/iam.serviceAccountUser"
+#   members            = [
+#     "serviceAccount:${var.target_service_account}",
+#     "user:devops@integraldevops.com",
+#     "user:farid@integraldevops.com",
+#     "user:osman@integraldevops.com",
+#   ]
+# //   condition {
+# //     title       = "expires_after_2019_12_31"
+# //     description = "Expiring at midnight of 2019-12-31"
+# //     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
+# //   }
+# }
+
+# resource "google_service_account_iam_binding" "token-creator-iam" {
+#   // provider           = google-beta
+#   service_account_id = google_service_account.prj-service-account.name
+#   role               = "roles/iam.serviceAccountTokenCreator"
+#   members            = [
+#     "serviceAccount:${var.target_service_account}",
+#     "user:devops@integraldevops.com",
+#     "user:farid@integraldevops.com",
+#     "user:osman@integraldevops.com",
+#   ]
 //   condition {
 //     title       = "expires_after_2019_12_31"
 //     description = "Expiring at midnight of 2019-12-31"
 //     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
 //   }
-}
+# }
 
-resource "google_service_account_iam_binding" "token-creator-iam" {
-  // provider           = google-beta
-  service_account_id = google_service_account.prj-service-account.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-  members            = [
-    "serviceAccount:${var.target_service_account}",
-    "user:devops@integraldevops.com",
-    "user:farid@integraldevops.com",
-    "user:osman@integraldevops.com",
-  ]
-//   condition {
-//     title       = "expires_after_2019_12_31"
-//     description = "Expiring at midnight of 2019-12-31"
-//     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
-//   }
-}
+# resource "google_project_iam_binding" "binding-iam-1" {
+#   // provider = google-beta
+#   project  = google_project.project.project_id
+#   role     = "roles/editor"
+#   members  = [
+#     "serviceAccount:${google_service_account.prj-service-account.email}",
+#   ]
+# //   condition {
+# //     title       = "expires_after_2019_12_31"
+# //     description = "Expiring at midnight of 2019-12-31"
+# //     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
+# //   }
+# }
 
-resource "google_project_iam_binding" "binding-iam-1" {
-  // provider = google-beta
-  project  = google_project.project.project_id
-  role     = "roles/editor"
-  members  = [
-    "serviceAccount:${google_service_account.prj-service-account.email}",
-  ]
-//   condition {
-//     title       = "expires_after_2019_12_31"
-//     description = "Expiring at midnight of 2019-12-31"
-//     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
-//   }
-}
+# resource "google_project_iam_binding" "binding-iam-2" {
+#   // provider = google-beta
+#   project  = google_project.project.project_id
+#   role     = "roles/resourcemanager.projectIamAdmin"
+#   members  = [
+#     "serviceAccount:${google_service_account.prj-service-account.email}",
+#   ]
+# //   condition {
+# //     title       = "expires_after_2019_12_31"
+# //     description = "Expiring at midnight of 2019-12-31"
+# //     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
+# //   }
+# }
 
-resource "google_project_iam_binding" "binding-iam-2" {
-  // provider = google-beta
-  project  = google_project.project.project_id
-  role     = "roles/resourcemanager.projectIamAdmin"
-  members  = [
-    "serviceAccount:${google_service_account.prj-service-account.email}",
-  ]
-//   condition {
-//     title       = "expires_after_2019_12_31"
-//     description = "Expiring at midnight of 2019-12-31"
-//     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")"
-//   }
-}
-
-// my changes
+# // my changes
 
 module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster-update-variant"
@@ -111,7 +111,7 @@ module "gke" {
   name                       = var.cluster_name
   region                     = var.region
   zones                      = ["us-west1-a", "us-west1-b", "us-west1-c"]
-  network                    = module.vpc-network.network
+  network                    = module.vpc-network.network_self_link
   subnetwork                 = local.subnet_01 
   ip_range_pods              = var.ip_range_pods
   ip_range_services          = var.ip_range_services
@@ -199,11 +199,10 @@ module "gke" {
 
 module "private-service-access" {
   source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version     = "~> 4.5"
+  version     = "4.5"
   project_id  = var.project_id
-  vpc_network     = module.vpc-network.network
-  vpc_network_url = module.vpc-network.network_self_link
-
+  vpc_network = module.vpc-network.network_self_link
+ }
 module "memcache" {
   source         = "terraform-google-modules/memorystore/google//modules/memcache"
   name           = var.name
@@ -398,5 +397,5 @@ module "postgresql" {
 #       }]
 #     },
 #   ]
-# }
-}
+# 
+
