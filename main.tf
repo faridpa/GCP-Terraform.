@@ -111,8 +111,8 @@ module "gke" {
   name                       = var.cluster_name
   region                     = var.region
   zones                      = ["us-west1-a", "us-west1-b", "us-west1-c"]
-  network                    = var.network
-  subnetwork                 = var.subnetwork
+  network                    = module.vpc-network.network
+  subnetwork                 = local.subnet_01 
   ip_range_pods              = var.ip_range_pods
   ip_range_services          = var.ip_range_services
   default_max_pods_per_node  = var.default_max_pods_per_node
@@ -200,14 +200,14 @@ module "gke" {
 module "private-service-access" {
   source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
   version     = "~> 4.5"
-  project_id  = var.project
-  vpc_network = "default"
-}
+  project_id  = var.project_id
+  vpc_network     = module.vpc-network.network
+  vpc_network_url = module.vpc-network.network_self_link
 
 module "memcache" {
   source         = "terraform-google-modules/memorystore/google//modules/memcache"
   name           = var.name
-  project        = can(module.private-service-access.peering_completed) ? var.project : ""
+  project        = can(module.private-service-access.peering_completed) ? var.project_id : ""
   memory_size_mb = var.memory_size_mb
   enable_apis    = var.enable_apis
   cpu_count      = var.cpu_count
@@ -218,7 +218,7 @@ module "memcache" {
 module "memorystore" {
   source         = "terraform-google-modules/memorystore/google"
   name           = var.name_redis
-  project        = var.project
+  project        = var.project_id
   memory_size_gb = var.memory_size_gb
   enable_apis    = var.enable_apis
 }
@@ -317,85 +317,86 @@ module "postgresql" {
   ]
 }
 
-module "vpc-secondary-ranges" {
-  source       = "terraform-google-modules/network/google"
-  project_id   = var.project_id
-  network_name = var.network_name
+# module "vpc-secondary-ranges" {
+#   source       = "terraform-google-modules/network/google"
+#   project_id   = var.project_id
+#   network_name = var.network_name
  
 
 
-  subnets = [
-    {
-      subnet_name   = "${local.subnet_01}"
-      subnet_ip     = "10.10.10.0/24"
-      subnet_region = "us-west1"
-    },
-    {
-      subnet_name           = "${local.subnet_02}"
-      subnet_ip             = "10.10.20.0/24"
-      subnet_region         = "us-west1"
-      subnet_private_access = "true"
-      subnet_flow_logs      = "true"
-    },
-    {
-      subnet_name               = "${local.subnet_03}"
-      subnet_ip                 = "10.10.30.0/24"
-      subnet_region             = "us-west1"
-      subnet_flow_logs          = "true"
-      subnet_flow_logs_interval = "INTERVAL_15_MIN"
-      subnet_flow_logs_sampling = 0.9
-      subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
-    },
-    {
-      subnet_name   = "${local.subnet_04}"
-      subnet_ip     = "10.10.40.0/24"
-      subnet_region = "us-west1"
-    },
-  ]
+#   subnets = [
+#     {
+#       subnet_name   = "{$local.subnet_01}"
+#       subnet_ip     = "10.10.10.0/24"
+#       subnet_region = "us-west1"
+#     },
+#     {
+#       subnet_name           = "${local.subnet_02}"
+#       subnet_ip             = "10.10.20.0/24"
+#       subnet_region         = "us-west1"
+#       subnet_private_access = "true"
+#       subnet_flow_logs      = "true"
+#     },
+#     {
+#       subnet_name               = "${local.subnet_03}"
+#       subnet_ip                 = "10.10.30.0/24"
+#       subnet_region             = "us-west1"
+#       subnet_flow_logs          = "true"
+#       subnet_flow_logs_interval = "INTERVAL_15_MIN"
+#       subnet_flow_logs_sampling = 0.9
+#       subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
+#     },
+#     {
+#       subnet_name   = "${local.subnet_04}"
+#       subnet_ip     = "10.10.40.0/24"
+#       subnet_region = "us-west1"
+#     },
+#   ]
 
-  secondary_ranges = {
-    "${local.subnet_01}" = [
-      {
-        range_name    = "${local.subnet_01}-01"
-        ip_cidr_range = "192.168.64.0/24"
-      },
-      {
-        range_name    = "${local.subnet_01}-02"
-        ip_cidr_range = "192.168.65.0/24"
-      },
-    ]
+#   secondary_ranges = {
+#     "${local.subnet_01}" = [
+#       {
+#         range_name    = "${local.subnet_01}-01"
+#         ip_cidr_range = "192.168.64.0/24"
+#       },
+#       {
+#         range_name    = "${local.subnet_01}-02"
+#         ip_cidr_range = "192.168.65.0/24"
+#       },
+#     ]
 
-    "${local.subnet_02}" = []
+#     "${local.subnet_02}" = []
 
-    "${local.subnet_03}" = [
-      {
-        range_name    = "${local.subnet_03}-01"
-        ip_cidr_range = "192.168.66.0/24"
-      },
-    ]
-  }
+#     "${local.subnet_03}" = [
+#       {
+#         range_name    = "${local.subnet_03}-01"
+#         ip_cidr_range = "192.168.66.0/24"
+#       },
+#     ]
+#   }
 
-  firewall_rules = [
-    {
-      name      = "allow-ssh-ingress"
-      direction = "INGRESS"
-      ranges    = ["0.0.0.0/0"]
-      allow = [{
-        protocol = "tcp"
-        ports    = ["22"]
-      }]
-      log_config = {
-        metadata = "INCLUDE_ALL_METADATA"
-      }
-    },
-    {
-      name      = "deny-udp-egress"
-      direction = "INGRESS"
-      ranges    = ["0.0.0.0/0"]
-      deny = [{
-        protocol = "udp"
-        ports    = null
-      }]
-    },
-  ]
+#   firewall_rules = [
+#     {
+#       name      = "allow-ssh-ingress"
+#       direction = "INGRESS"
+#       ranges    = ["0.0.0.0/0"]
+#       allow = [{
+#         protocol = "tcp"
+#         ports    = ["22"]
+#       }]
+#       log_config = {
+#         metadata = "INCLUDE_ALL_METADATA"
+#       }
+#     },
+#     {
+#       name      = "deny-udp-egress"
+#       direction = "INGRESS"
+#       ranges    = ["0.0.0.0/0"]
+#       deny = [{
+#         protocol = "udp"
+#         ports    = null
+#       }]
+#     },
+#   ]
+# }
 }

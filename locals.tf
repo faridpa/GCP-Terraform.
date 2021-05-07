@@ -2,10 +2,15 @@
 locals {
   subnet_01 = "${var.network_name}-subnet-01"
   subnet_02 = "${var.network_name}-subnet-02"
-  subnet_03 = "${var.network_name}-subnet-03"
-  subnet_04 = "${var.network_name}-subnet-04"
-}
-locals {
+  network_routes = [
+    {
+      name              = "${var.network_name}-egress-inet"
+      description       = "route through IGW to access internet"
+      destination_range = "-3.0.0.0/0"
+      tags              = "egress-inet"
+      next_hop_internet = "true"
+    },
+  ]
   read_replica_ip_configuration = {
     ipv4_enabled    = true
     require_ssl     = false
