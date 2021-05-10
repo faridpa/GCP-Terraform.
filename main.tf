@@ -114,104 +114,23 @@ module "vpc-network" {
   ]
 }
 
-// module "development-gke-project" {
-//   source               = "terraform-google-modules/project-factory/google"
-//   for_each             = toset(var.projects)
-//   name                 = "development-${each.value}"
-//   random_project_id    = true
-//   org_id               = var.org_id
-//   folder_id            = lookup(lookup(module.folders.folders_map, "development"), "id")
-//   billing_account      = var.billing_account_id
-//   group_name           = "devops-gp"
-//   group_role           = "roles/owner"
-//   activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com"]
-//   svpc_host_project_id = module.shared-vpc-project.project_id
-//   shared_vpc_subnets   = [lookup(lookup(module.vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
-//   labels               = {"purpose":"gke"}
-//   sa_role              = "roles/editor"
-// }
+module "development-gke-project" {
+  source               = "terraform-google-modules/project-factory/google"
+  for_each             = toset(var.projects)
+  name                 = "development-${each.value}"
+  random_project_id    = true
+  org_id               = var.org_id
+  folder_id            = lookup(lookup(module.folders.folders_map, "development"), "id")
+  billing_account      = var.billing_account_id
+  group_name           = "devops-gp"
+  group_role           = "roles/owner"
+  activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com"]
+  svpc_host_project_id = module.shared-vpc-project.project_id
+  shared_vpc_subnets   = [lookup(lookup(module.vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
+  labels               = {"purpose":"gke"}
+  sa_role              = "roles/editor"
+}
 
-// module "gke" {
-//   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster-update-variant"
-//   project_id                 = module.development-gke-project.project_id
-//   network_project_id         = module.shared-vpc-project.project_id
-//   name                       = var.cluster_name
-//   region                     = var.region
-//   zones                      = data.google_compute_zones.available.names
-//   network                    = module.vpc-network.network_name
-//   subnetwork                 = local.subnet_01
-//   ip_range_pods              = "${local.subnet_01}-01"
-//   ip_range_services          = "${local.subnet_01}-02"
-//   default_max_pods_per_node  = var.default_max_pods_per_node
-//   http_load_balancing        = true
-//   horizontal_pod_autoscaling = true
-//   network_policy             = false
-//   enable_private_endpoint    = true
-//   enable_private_nodes       = true
-//   master_ipv4_cidr_block     = "10.0.0.0/28"
-//   remove_default_node_pool   = true
-//   istio = true
-//   cloudrun = true
-//   dns_cache = false
-//   master_authorized_networks = [
-//     {
-//       cidr_block = "10.10.10.0/24"
-//       display_name = "Private"
-//     }
-//   ]
-//   node_pools = [
-//     {
-//       name               = "default-node-pool"
-//       machine_type       = "n1-standard-2"
-//       node_locations     = join(",", data.google_compute_zones.available.names)
-//       min_count          = 1
-//       max_count          = 1
-//       local_ssd_count    = 0
-//       disk_size_gb       = 10
-//       disk_type          = "pd-standard"
-//       image_type         = "COS"
-//       auto_repair        = true
-//       auto_upgrade       = true
-//       service_account    = module.development-gke-project.service_account_email
-//       preemptible        = false
-//       initial_node_count = 1
-//     },
-//   ]
-//   node_pools_oauth_scopes = {
-//     all = []
-//     default-node-pool = [
-//       "https://www.googleapis.com/auth/cloud-platform",
-//     ]
-//   }
-//   node_pools_labels = {
-//     all = {}
-//     default-node-pool = {
-//       default-node-pool = true
-//     }
-//   }
-//   node_pools_metadata = {
-//     all = {}
-//     default-node-pool = {
-//       node-pool-metadata-custom-value = "my-node-pool"
-//     }
-//   }
-//   node_pools_taints = {
-//     all = []
-//     default-node-pool = [
-//       {
-//         key    = "default-node-pool"
-//         value  = true
-//         effect = "PREFER_NO_SCHEDULE"
-//       },
-//     ]
-//   }
-//   node_pools_tags = {
-//     all = []
-//     default-node-pool = [
-//       "default-node-pool",
-//     ]
-//   }
-// }
 
 // module "postgresql" {
 //   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"

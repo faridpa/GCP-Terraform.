@@ -10,9 +10,10 @@ locals {
       next_hop_internet = "true"
     },
   ]
-  // project_ids = {
-  //   for k, v in module.development-gke-project : k => v.project_id
-  // }
+  project_ids = {
+    for k, v in module.development-gke-project : k => v.project_id }
+
+  //
   // read_replica_ip_configuration = {
   //   ipv4_enabled    = true
   //   require_ssl     = false
