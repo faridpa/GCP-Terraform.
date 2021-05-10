@@ -1,16 +1,15 @@
-module "development-db-project" {
+module "postgresql" {
   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
   name                   = var.pg_ha_name
   random_instance_name   = true
-  database_version       = "POSTGRES_9_6"
+  database_version       = "POSTGRES_13_2"
   project_id             = lookup(local.project_ids,"db-project")
   zone                   = "us-west1-a"
   region                 = "us-west1"
   tier                   = "db-f1-micro"
   deletion_protection    = false
   create_timeout         = "20m"
-  create_service_account = true
-  ip_configuration       = {
+   ip_configuration       = {
    ipv4_enabled          = true
    require_ssl           = false
    private_network       = null
@@ -91,4 +90,29 @@ module "development-db-project" {
      host     = "localhost"
    },
  ]
+}
+
+module "private-service-access" {
+  source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
+  version     = "4.5"
+  project_id  = lookup(local.project_ids,"db-project")
+  vpc_network = module.vpc-network.network_self_link
+}
+
+module "memcache" {
+  source         = "terraform-google-modules/memorystore/google//modules/memcache"
+  name           = var.name
+  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"gke-project") : ""
+  memory_size_mb = var.memory_size_mb
+  enable_apis    = var.enable_apis
+  cpu_count      = var.cpu_count
+  region         = var.region
+}
+
+module "memorystore" {
+  source         = "terraform-google-modules/memorystore/google"
+  name           = var.name_redis
+  project        = lookup(local.project_ids,"gke-project")
+  memory_size_gb = var.memory_size_gb
+  enable_apis    = var.enable_apis
 }
