@@ -1,7 +1,7 @@
 billing_account_id        = "018BC9-549406-B7C8C3"
 org_id                    = "392828863790"
 region                    = "us-west1"
-target_service_account    = "terraform-sa@secops-311714.iam.gserviceaccount.com"
+target_service_account    = "tf-sa01@secops-311714.iam.gserviceaccount.com"
 folder_name               = "shared"
 project_name              = "shared-vpc-project"
 project_id                = "secops-311714"

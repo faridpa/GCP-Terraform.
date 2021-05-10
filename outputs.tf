@@ -33,6 +33,6 @@
 //   value = lookup(lookup(module.folders.folders_map, "root"), "id")
 // }
 
-output "project_ids" {
-  value = local.project_ids
-}
+// output "project_ids" {
+//   value = local.project_ids
+// }

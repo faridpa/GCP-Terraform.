@@ -24,6 +24,13 @@ provider "google" {
   access_token = data.google_service_account_access_token.default.access_token
 }
 
+provider "google-beta" {
+  region  = var.region
+  project = var.project_id
+  zone    = var.region
+  access_token = data.google_service_account_access_token.default.access_token
+}
+
 // provider "kubernetes" {
 //   load_config_file       = false
 //   host                   = "https://${module.gke.endpoint}"
