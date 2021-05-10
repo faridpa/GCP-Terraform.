@@ -20,7 +20,7 @@ locals {
     private_network = null
     authorized_networks = [
   {
-    name  = "${var.project_id}-cidr"
+  name  = "${lookup(local.project_ids,"db-project")}-cidr"
       value = var.pg_ha_external_ip_range
    },
     ]

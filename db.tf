@@ -94,15 +94,15 @@ module "postgresql" {
 
 module "private-service-access" {
   source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version     = "4.5"
-  project_id  = lookup(local.project_ids,"db-project")
-  vpc_network = module.vpc-network.network_self_link
+  version     = "5.0.1"
+  project_id  = module.shared-vpc-project.project_id
+  vpc_network = module.shared-vpc-project.network_self_link
 }
 
 module "memcache" {
   source         = "terraform-google-modules/memorystore/google//modules/memcache"
   name           = var.name
-  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"gke-project") : ""
+  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
   memory_size_mb = var.memory_size_mb
   enable_apis    = var.enable_apis
   cpu_count      = var.cpu_count
@@ -112,7 +112,7 @@ module "memcache" {
 module "memorystore" {
   source         = "terraform-google-modules/memorystore/google"
   name           = var.name_redis
-  project        = lookup(local.project_ids,"gke-project")
+  project        = lookup(local.project_ids,"db-project")
   memory_size_gb = var.memory_size_gb
   enable_apis    = var.enable_apis
 }
