@@ -94,21 +94,20 @@ module "postgresql" {
 
 module "private-service-access" {
   source            = "./modules/private-service-access"
-  provider          = "google-beta"
   project_id        = module.vpc-network.project_id
   vpc_network       = module.vpc-network.network_name
   network_self_link = module.vpc-network.network_self_link
 }
 
-module "memcache" {
-  source         = "terraform-google-modules/memorystore/google//modules/memcache"
-  name           = var.name
-  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
-  memory_size_mb = var.memory_size_mb
-  enable_apis    = var.enable_apis
-  cpu_count      = var.cpu_count
-  region         = var.region
-}
+# module "memcache" {
+#   source         = "terraform-google-modules/memorystore/google//modules/memcache"
+#   name           = var.name
+#   project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+#   memory_size_mb = var.memory_size_mb
+#   enable_apis    = var.enable_apis
+#   cpu_count      = var.cpu_count
+#   region         = var.region
+# }
 
 module "memorystore" {
   source             = "terraform-google-modules/memorystore/google"
