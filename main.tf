@@ -35,7 +35,8 @@ module "shared-vpc-project" {
   enable_shared_vpc_host_project = true
   group_name                     = "devops-gp"
   group_role                     = "roles/owner"
-  activate_apis                  = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com"]
+  activate_apis                  = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com", 
+                                    "servicenetworking.googleapis.com", "sqladmin.googleapis.com", "redis.googleapis.com", "memcache.googleapis.com"]
   labels                         = {"purpose":"shared-vpc"}
   lien                           = true
   sa_role                        = "roles/editor"

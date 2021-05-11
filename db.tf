@@ -2,7 +2,7 @@ module "postgresql" {
   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
   name                   = var.pg_ha_name
   random_instance_name   = true
-  database_version       = "POSTGRES_13_2"
+  database_version       = "POSTGRES_13"
   project_id             = lookup(local.project_ids,"db-project")
   zone                   = "us-west1-a"
   region                 = "us-west1"
@@ -95,8 +95,8 @@ module "postgresql" {
 module "private-service-access" {
   source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
   version     = "5.0.1"
-  project_id  = module.shared-vpc-project.project_id
-  vpc_network = module.shared-vpc-project.network_self_link
+  project_id  = module.vpc-network.project_id
+  vpc_network = module.vpc-network.network_name
 }
 
 module "memcache" {
@@ -110,9 +110,10 @@ module "memcache" {
 }
 
 module "memorystore" {
-  source         = "terraform-google-modules/memorystore/google"
-  name           = var.name_redis
-  project        = lookup(local.project_ids,"db-project")
-  memory_size_gb = var.memory_size_gb
-  enable_apis    = var.enable_apis
+  source             = "terraform-google-modules/memorystore/google"
+  name               = var.name_redis
+  project            = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+  memory_size_gb     = var.memory_size_gb
+  enable_apis        = var.enable_apis
+  authorized_network = module.vpc-network.network_self_link
 }
