@@ -93,10 +93,11 @@ module "postgresql" {
 }
 
 module "private-service-access" {
-  source      = "GoogleCloudPlatform/sql-db/google//modules/private_service_access"
-  version     = "5.0.1"
-  project_id  = module.vpc-network.project_id
-  vpc_network = module.vpc-network.network_name
+  source            = "./modules/private-service-access"
+  provider          = "google-beta"
+  project_id        = module.vpc-network.project_id
+  vpc_network       = module.vpc-network.network_name
+  network_self_link = module.vpc-network.network_self_link
 }
 
 module "memcache" {
@@ -112,6 +113,7 @@ module "memcache" {
 module "memorystore" {
   source             = "terraform-google-modules/memorystore/google"
   name               = var.name_redis
+  connect_mode       = "PRIVATE_SERVICE_ACCESS"
   project            = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
   memory_size_gb     = var.memory_size_gb
   enable_apis        = var.enable_apis
