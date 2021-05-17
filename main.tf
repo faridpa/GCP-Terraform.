@@ -58,14 +58,14 @@ module "shared-vpc-network" {
   subnets = [
     {
       subnet_name          = local.subnet_01
-      subnet_ip            = "10.10.10.0/24"
+      subnet_ip            = "10.10.0.0/21"
       subnet_region        = var.region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
     },
     {
       subnet_name           = local.subnet_02
-      subnet_ip             = "10.10.20.0/24"
+      subnet_ip             = "10.10.8.0/21"
       subnet_region         = var.region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
