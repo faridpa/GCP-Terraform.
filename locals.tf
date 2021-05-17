@@ -11,7 +11,7 @@ locals {
     },
   ]
   project_ids = {
-    for k, v in module.development-gke-project : k => v.project_id }
+    for k, v in module.development-projects : k => v.project_id }
 
   //
   read_replica_ip_configuration = {

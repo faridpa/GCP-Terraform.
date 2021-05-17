@@ -5,7 +5,7 @@
 #   name                       = var.cluster_name
 #   region                     = var.region
 #   zones                      = data.google_compute_zones.available.names
-#   network                    = module.vpc-network.network_name
+#   network                    = module.shared-vpc-network.network_name
 #   subnetwork                 = local.subnet_01
 #   ip_range_pods              = "${local.subnet_01}-01"
 #   ip_range_services          = "${local.subnet_01}-02"
@@ -40,7 +40,7 @@
 #       image_type         = "COS"
 #       auto_repair        = true
 #       auto_upgrade       = true
-#       # service_account    = module.development-gke-project.service_account_email
+#       # service_account    = module.development-projects.service_account_email
 #       preemptible        = false
 #       initial_node_count = 1
 #     },

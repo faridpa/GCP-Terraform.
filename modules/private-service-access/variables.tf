@@ -27,13 +27,13 @@ variable "vpc_network" {
 variable "address" {
   description = "First IP address of the IP range to allocate to CLoud SQL instances and other Private Service Access services. If not set, GCP will pick a valid one for you."
   type        = string
-  default     = "10.10.20.250"
+  default     = "10.10.21.1"
 }
 
 variable "prefix_length" {
   description = "Prefix length of the IP range reserved for Cloud SQL instances and other Private Service Access services. Defaults to /16."
   type        = number
-  default     = 32
+  default     = 24
 }
 
 variable "ip_version" {

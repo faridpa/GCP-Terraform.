@@ -47,7 +47,7 @@ resource "google_compute_project_default_network_tier" "default" {
   network_tier = "PREMIUM"
 }
 
-module "vpc-network" {
+module "shared-vpc-network" {
   source                  = "terraform-google-modules/network/google"
   project_id              = module.shared-vpc-project.project_id
   version                 = "~> 3.2.2"
@@ -115,8 +115,8 @@ module "vpc-network" {
   ]
 }
 
-module "development-gke-project" {
-  source               = "terraform-google-modules/project-factory/google"
+module "development-projects" {
+  source               = "terraform-google-modules/project-factory/google//modules/svpc_service_project"
   for_each             = toset(var.projects)
   name                 = "development-${each.value}"
   random_project_id    = true
@@ -126,9 +126,11 @@ module "development-gke-project" {
   group_name           = "devops-gp"
   group_role           = "roles/owner"
   activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com"]
-  svpc_host_project_id = module.shared-vpc-project.project_id
-  shared_vpc_subnets   = [lookup(lookup(module.vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
+  shared_vpc           = module.shared-vpc-project.project_id
+  shared_vpc_subnets   = [lookup(lookup(module.shared-vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
   labels               = {"purpose":"gke"}
   sa_role              = "roles/editor"
+  depends_on           = [module.shared-vpc-project,
+                          module.shared-vpc-network
+                         ]
 }
-

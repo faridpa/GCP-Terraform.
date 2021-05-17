@@ -17,7 +17,7 @@
 // }
 
 // output "shared-vpc-subnets" {
-//   value = module.vpc-network.subnets
+//   value = module.shared-vpc-network.subnets
 // }
 
 // output "gke-endpoint" {
@@ -26,7 +26,7 @@
 // }
 
 // output "shared-vpc-subnet-self-links" {
-//   value = module.vpc-network.subnets_self_links
+//   value = module.shared-vpc-network.subnets_self_links
 // }
 
 // output "folder-ids" {
