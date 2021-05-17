@@ -1,6 +1,7 @@
 variable "billing_account_id" {}
 variable "org_id" {}
 variable "region" {}
+variable "zone" {}
 variable "target_service_account" {}
 variable "folder_name" {}
 variable "project_name" {}

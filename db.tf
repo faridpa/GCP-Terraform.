@@ -1,74 +1,74 @@
-// module "postgresql" {
-//   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
-//   name                   = var.pg_ha_name
-//   random_instance_name   = true
-//   database_version       = "POSTGRES_13"
-//   project_id             = lookup(local.project_ids,"db-project")
-//   zone                   = "us-west1-a"
-//   region                 = "us-west1"
-//   tier                   = "db-f1-micro"
-//   deletion_protection    = false
-//   create_timeout         = "20m"
-//    ip_configuration       = {
-//    ipv4_enabled          = true
-//    require_ssl           = false
-//    private_network       = null
-//    authorized_networks   = [
-//      {
-//        name  = "${var.project_id}-cidr"
-//        value = var.pg_ha_external_ip_range
-//      },
-//    ]
-//  }
-//  backup_configuration = {
-//    enabled                        = true
-//    start_time                     = "21:00"
-//    location                       = null
-//    point_in_time_recovery_enabled = false
-//  }
-//  read_replica_name_suffix = "-test"
-//  read_replicas = [
-//    {
-//      name             = "0"
-//      zone             = "us-west1-a"
-//      tier             = "db-f1-micro"
-//      ip_configuration = local.read_replica_ip_configuration
-//      database_flags   = [{ name = "autovacuum", value = "off" }]
-//      disk_autoresize  = null
-//      disk_size        = null
-//      disk_type        = "PD_HDD"
-//      user_labels      = { bar = "baz" }
-//    },
-//  ]
+ module "postgresql" {
+   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
+   name                   = var.pg_ha_name
+   random_instance_name   = true
+   database_version       = "POSTGRES_13"
+   project_id             = lookup(local.project_ids,"db-project")
+   zone                   = var.zone
+   region                 = var.region
+   tier                   = "db-g1-small"
+   deletion_protection    = false
+   create_timeout         = "20m"
+   ip_configuration       = {
+     ipv4_enabled          = true
+     require_ssl           = false
+     private_network       = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+     authorized_networks   = [
+       {
+         name  = "${var.project_id}-cidr"
+         value = var.pg_ha_external_ip_range
+       },
+    ]
+  }
+  backup_configuration = {
+    enabled                        = true
+    start_time                     = "21:00"
+    location                       = null
+    point_in_time_recovery_enabled = false
+  }
+  read_replica_name_suffix = "-test"
+  read_replicas = [
+    {
+      name             = "0"
+      zone             = var.zone
+      tier             = "db-g1-small"
+      ip_configuration = local.read_replica_ip_configuration
+      database_flags   = [{ name = "autovacuum", value = "off" }]
+      disk_autoresize  = null
+      disk_size        = null
+      disk_type        = "PD_HDD"
+      user_labels      = { bar = "baz" }
+    },
+  ]
 
-//  db_name      = var.pg_ha_name
-//  db_charset   = "UTF8"
-//  db_collation = "en_US.UTF8"
+  db_name      = var.pg_ha_name
+  db_charset   = "UTF8"
+  db_collation = "en_US.UTF8"
 
-//  additional_databases = [
-//    {
-//      name      = "${var.pg_ha_name}-additional"
-//      charset   = "UTF8"
-//      collation = "en_US.UTF8"
-//    },
-//  ]
+  additional_databases = [
+    {
+      name      = "${var.pg_ha_name}-additional"
+      charset   = "UTF8"
+      collation = "en_US.UTF8"
+    },
+  ]
 
-//  user_name     = "tftest"
-//  user_password = "foobar"
+  user_name     = "tftest"
+  user_password = "foobar"
 
-//  additional_users = [
-//    {
-//      name     = "tftest2"
-//      password = "abcdefg"
-//      host     = "localhost"
-//    },
-//    {
-//      name     = "tftest3"
-//      password = "abcdefg"
-//      host     = "localhost"
-//    },
-//  ]
-// }
+  additional_users = [
+    {
+      name     = "tftest2"
+      password = "abcdefg"
+      host     = "localhost"
+    },
+    {
+      name     = "tftest3"
+      password = "abcdefg"
+      host     = "localhost"
+    },
+  ]
+ }
 
 module "private-service-access" {
   source            = "./modules/private-service-access"
@@ -77,15 +77,16 @@ module "private-service-access" {
   network_self_link = module.shared-vpc-network.network_self_link
 }
 
-# module "memcache" {
-#   source         = "terraform-google-modules/memorystore/google//modules/memcache"
-#   name           = var.name
-#   project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
-#   memory_size_mb = var.memory_size_mb
-#   enable_apis    = var.enable_apis
-#   cpu_count      = var.cpu_count
-#   region         = var.region
-# }
+module "memcache" {
+  source         = "terraform-google-modules/memorystore/google//modules/memcache"
+  name           = var.name
+  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+  memory_size_mb = var.memory_size_mb
+  enable_apis    = var.enable_apis
+  cpu_count      = var.cpu_count
+  region         = var.region
+  authorized_network = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+}
 
 module "memorystore" {
   source             = "terraform-google-modules/memorystore/google"

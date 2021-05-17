@@ -125,7 +125,7 @@ module "development-projects" {
   billing_account      = var.billing_account_id
   group_name           = "devops-gp"
   group_role           = "roles/owner"
-  activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com"]
+  activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com", "servicenetworking.googleapis.com"]
   shared_vpc           = module.shared-vpc-project.project_id
   shared_vpc_subnets   = [lookup(lookup(module.shared-vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
   labels               = {"purpose":"gke"}
