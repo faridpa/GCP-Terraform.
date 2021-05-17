@@ -3,8 +3,8 @@ resource "google_compute_global_address" "google-managed-services-range" {
   project       = var.project_id
   name          = "google-managed-services-${var.vpc_network}"
   purpose       = "PRIVATE_SERVICE_CONNECT"
-  # address       = var.address
-  prefix_length = var.prefix_length
+  address       = var.address
+  # prefix_length = var.prefix_length
   ip_version    = var.ip_version
   labels        = var.labels
   address_type  = "INTERNAL"
