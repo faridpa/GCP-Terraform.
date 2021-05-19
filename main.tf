@@ -115,6 +115,15 @@ module "shared-vpc-network" {
   ]
 }
 
+module "private-service-access" {
+  source            = "./modules/private-service-access"
+  count             = 3
+  name              = count.index
+  project_id        = module.shared-vpc-network.project_id
+  vpc_network       = module.shared-vpc-network.network_name
+  network_self_link = module.shared-vpc-network.network_self_link
+}
+
 module "development-projects" {
   source               = "terraform-google-modules/project-factory/google//modules/svpc_service_project"
   for_each             = toset(var.projects)

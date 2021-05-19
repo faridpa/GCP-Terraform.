@@ -1,24 +1,24 @@
- module "postgresql" {
-   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
-   name                   = var.pg_ha_name
-   random_instance_name   = true
-   database_version       = "POSTGRES_13"
-   project_id             = lookup(local.project_ids,"db-project")
-   zone                   = var.zone
-   region                 = var.region
-   tier                   = "db-g1-small"
-   deletion_protection    = false
-   create_timeout         = "20m"
-   ip_configuration       = {
-     ipv4_enabled          = true
-     require_ssl           = false
-     private_network       = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
-     authorized_networks   = [
-       {
-         name  = "${var.project_id}-cidr"
-         value = var.pg_ha_external_ip_range
-       },
-    ]
+module "postgresql" {
+  source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
+  name                   = var.pg_ha_name
+  random_instance_name   = true
+  database_version       = "POSTGRES_13"
+  project_id             = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+  zone                   = var.zone
+  region                 = var.region
+  tier                   = "db-g1-small"
+  deletion_protection    = false
+  create_timeout         = "20m"
+  ip_configuration       = {
+    ipv4_enabled        = false
+    require_ssl         = false
+    private_network     = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+    authorized_networks = []
+    //    {
+    //      name  = "${var.project_id}-cidr"
+    //      value = var.pg_ha_external_ip_range
+    //    },
+    // ]
   }
   backup_configuration = {
     enabled                        = true
@@ -26,13 +26,18 @@
     location                       = null
     point_in_time_recovery_enabled = false
   }
-  read_replica_name_suffix = "-test"
+  // read_replica_name_suffix = "-test"
   read_replicas = [
     {
-      name             = "0"
+      name             = "${var.pg_ha_name}-replica-0"
       zone             = var.zone
       tier             = "db-g1-small"
-      ip_configuration = local.read_replica_ip_configuration
+      ip_configuration = {
+        ipv4_enabled         = false
+        require_ssl          = false
+        private_network      = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+        authorized_networks  = []
+      }
       database_flags   = [{ name = "autovacuum", value = "off" }]
       disk_autoresize  = null
       disk_size        = null
@@ -68,13 +73,6 @@
       host     = "localhost"
     },
   ]
- }
-
-module "private-service-access" {
-  source            = "./modules/private-service-access"
-  project_id        = module.shared-vpc-network.project_id
-  vpc_network       = module.shared-vpc-network.network_name
-  network_self_link = module.shared-vpc-network.network_self_link
 }
 
 module "memcache" {

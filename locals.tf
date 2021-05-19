@@ -14,15 +14,15 @@ locals {
     for k, v in module.development-projects : k => v.project_id }
 
   //
-  read_replica_ip_configuration = {
-    ipv4_enabled    = true
-    require_ssl     = false
-    private_network = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
-    authorized_networks = [
-  {
-  name  = "${lookup(local.project_ids,"db-project")}-cidr"
-      value = var.pg_ha_external_ip_range
-   },
-    ]
-  }
+  // read_replica_ip_configuration = {
+  //   ipv4_enabled    = false
+  //   require_ssl     = false
+  //   private_network = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+  //   authorized_networks = []
+  //   //  {
+  //   //    name  = "${lookup(local.project_ids,"db-project")}-cidr"
+  //   //    value = var.pg_ha_external_ip_range
+  //   //  },
+  //   // ]
+  // }
 }
