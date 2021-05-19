@@ -20,5 +20,5 @@ enable_apis                    = true
 cpu_count                      = "1"
 name_redis                     = "ios-redis"
 memory_size_gb                 = "1"
-pg_ha_name                     = "pitchupdb"
+pg_ha_name                     = "pit"
 pg_ha_external_ip_range        = "0.0.0.0/0"
