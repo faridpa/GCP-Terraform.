@@ -30,8 +30,12 @@ variable "address" {
   default     = "10.10.21.1"
 }
 
-variable "name" {
-  type        = string
+// variable "name" {
+//   type        = string
+// }
+
+variable "num_ip_ranges" {
+  type        = number
 }
 
 variable "prefix_length" {

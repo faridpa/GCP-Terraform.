@@ -117,8 +117,7 @@ module "shared-vpc-network" {
 
 module "private-service-access" {
   source            = "./modules/private-service-access"
-  count             = 3
-  name              = count.index
+  num_ip_ranges     = var.num_ip_ranges
   project_id        = module.shared-vpc-network.project_id
   vpc_network       = module.shared-vpc-network.network_name
   network_self_link = module.shared-vpc-network.network_self_link
