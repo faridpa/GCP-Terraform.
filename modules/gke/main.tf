@@ -1,14 +1,14 @@
 module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster-update-variant"
-  project_id                 = lookup(local.project_ids,"gke-project")
-  network_project_id         = module.shared-vpc-project.project_id
+  project_id                 = var.project_id
+  network_project_id         = var.network_project_id
   name                       = var.cluster_name
   region                     = var.region
   zones                      = data.google_compute_zones.available.names
-  network                    = module.shared-vpc-network.network_name
-  subnetwork                 = local.subnet_01
-  ip_range_pods              = "${local.subnet_01}-01"
-  ip_range_services          = "${local.subnet_01}-02"
+  network                    = var.network_name
+  subnetwork                 = var.subnetwork
+  ip_range_pods              = var.ip_range_pods
+  ip_range_services          = var.ip_range_services 
   default_max_pods_per_node  = var.default_max_pods_per_node
   http_load_balancing        = true
   horizontal_pod_autoscaling = true
