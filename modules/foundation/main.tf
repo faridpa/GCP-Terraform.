@@ -57,14 +57,14 @@ module "shared-vpc-network" {
   shared_vpc_host         = true
   subnets = [
     {
-      subnet_name          = local.subnet_01
+      subnet_name          = "${var.network_name}-subnet-01"
       subnet_ip            = "10.10.0.0/21"
       subnet_region        = var.region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
     },
     {
-      subnet_name           = local.subnet_02
+      subnet_name           = "${var.network_name}-subnet-02"
       subnet_ip             = "10.10.8.0/21"
       subnet_region         = var.region
       subnet_private_access = "true"
@@ -72,19 +72,19 @@ module "shared-vpc-network" {
     },
   ]
   secondary_ranges = {
-    (local.subnet_01) = [
+    "${var.network_name}-subnet-01" = [
       {
-        range_name    = "${local.subnet_01}-01"
+        range_name    = "${var.network_name}-subnet-01-01"
         ip_cidr_range = "192.168.64.0/24"
       },
       {
-        range_name    = "${local.subnet_01}-02"
+        range_name    = "${var.network_name}-subnet-01-02"
         ip_cidr_range = "192.168.65.0/24"
       },
     ]
-    (local.subnet_02) = [
+    "${var.network_name}-subnet-02" = [
       {
-        range_name    = "${local.subnet_02}-01"
+        range_name    = "${var.network_name}-subnet-02-01"
         ip_cidr_range = "192.168.66.0/24"
       },
     ]
@@ -127,7 +127,7 @@ module "development-projects" {
   group_role           = "roles/owner"
   activate_apis        = ["compute.googleapis.com", "container.googleapis.com", "cloudbilling.googleapis.com", "servicenetworking.googleapis.com"]
   shared_vpc           = module.shared-vpc-project.project_id
-  shared_vpc_subnets   = [lookup(lookup(module.shared-vpc-network.subnets, "${var.region}/${local.subnet_01}"),"self_link")]
+  shared_vpc_subnets   = [lookup(lookup(module.shared-vpc-network.subnets, "${var.region}/${var.network_name}-subnet-01"),"self_link")]
   labels               = {"purpose":"gke"}
   sa_role              = "roles/editor"
   depends_on           = [module.shared-vpc-project,

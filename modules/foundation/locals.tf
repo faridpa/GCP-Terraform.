@@ -1,6 +1,4 @@
 locals {
-  subnet_01 = "${var.network_name}-subnet-01"
-  subnet_02 = "${var.network_name}-subnet-02"
   network_routes = [
     {
       name              = "${var.network_name}-egress-inet"

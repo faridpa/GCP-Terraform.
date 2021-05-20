@@ -36,3 +36,23 @@
 // output "project_ids" {
 //   value = local.project_ids
 // }
+
+output "project_ids" {
+  value = module.foundation.project_ids
+}
+
+output "shared_vpc_project_id" {
+  value = module.foundation.shared_vpc_project_id
+}
+
+output "shared_vpc_network_name" {
+  value = module.foundation.shared_vpc_network_name
+}
+
+output "shared_vpc_subnets_names" {
+  value = module.foundation.shared_vpc_subnets_names
+}
+
+output "shared_vpc_subnets_secondary_ranges" {
+  value = module.foundation.shared_vpc_subnets_secondary_ranges
+}
