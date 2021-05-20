@@ -32,3 +32,4 @@ variable "num_ip_ranges" {
 
 variable "subnetwork_1_name" {}
 variable "subnetwork_2_name" {}
+variable "db_tier" {}

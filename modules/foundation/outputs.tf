@@ -17,3 +17,7 @@ output "shared_vpc_subnets_names" {
 output "shared_vpc_subnets_secondary_ranges" {
   value = module.shared-vpc-network.subnets_secondary_ranges
 }
+
+output "shared_vpc_network_self_link" {
+  value = module.shared-vpc-network.network_self_link
+}

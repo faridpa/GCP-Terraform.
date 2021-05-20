@@ -1,18 +1,26 @@
+module "private-service-access" {
+  source            = "../private-service-access"
+  num_ip_ranges     = var.num_ip_ranges
+  project_id        = var.network_project_id
+  vpc_network       = var.network_name
+  network_self_link = var.network_self_link
+}
+
 module "postgresql" {
-  source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
+  source                 = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
   name                   = var.pg_ha_name
   random_instance_name   = true
   database_version       = "POSTGRES_13"
-  project_id             = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+  project_id             = can(module.private-service-access.peering_completed) ? var.project_id : ""
   zone                   = var.zone
   region                 = var.region
-  tier                   = "db-g1-small"
+  tier                   = var.db_tier
   deletion_protection    = false
   create_timeout         = "20m"
   ip_configuration       = {
     ipv4_enabled        = false
     require_ssl         = false
-    private_network     = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+    private_network     = "projects/${var.network_project_id}/global/networks/${var.network_name}"
     authorized_networks = []
     //    {
     //      name  = "${var.project_id}-cidr"
@@ -31,11 +39,11 @@ module "postgresql" {
     {
       name             = "${var.pg_ha_name}-replica-0"
       zone             = var.zone
-      tier             = "db-g1-small"
+      tier             = var.db_tier
       ip_configuration = {
         ipv4_enabled         = false
         require_ssl          = false
-        private_network      = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+        private_network      = "projects/${var.network_project_id}/global/networks/${var.network_name}"
         authorized_networks  = []
       }
       database_flags   = [{ name = "autovacuum", value = "off" }]
@@ -75,23 +83,23 @@ module "postgresql" {
   ]
 }
 
-module "memcache" {
-  source         = "terraform-google-modules/memorystore/google//modules/memcache"
-  name           = var.name
-  project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
-  memory_size_mb = var.memory_size_mb
-  enable_apis    = var.enable_apis
-  cpu_count      = var.cpu_count
-  region         = var.region
-  authorized_network = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
-}
+# module "memcache" {
+#   source         = "terraform-google-modules/memorystore/google//modules/memcache"
+#   name           = var.name
+#   project        = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+#   memory_size_mb = var.memory_size_mb
+#   enable_apis    = var.enable_apis
+#   cpu_count      = var.cpu_count
+#   region         = var.region
+#   authorized_network = "projects/${module.shared-vpc-network.project_id}/global/networks/${module.shared-vpc-network.network_name}"
+# }
 
-module "memorystore" {
-  source             = "terraform-google-modules/memorystore/google"
-  name               = var.name_redis
-  connect_mode       = "PRIVATE_SERVICE_ACCESS"
-  project            = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
-  memory_size_gb     = var.memory_size_gb
-  enable_apis        = var.enable_apis
-  authorized_network = module.shared-vpc-network.network_self_link
-}
+# module "memorystore" {
+#   source             = "terraform-google-modules/memorystore/google"
+#   name               = var.name_redis
+#   connect_mode       = "PRIVATE_SERVICE_ACCESS"
+#   project            = can(module.private-service-access.peering_completed) ? lookup(local.project_ids,"db-project") : ""
+#   memory_size_gb     = var.memory_size_gb
+#   enable_apis        = var.enable_apis
+#   authorized_network = module.shared-vpc-network.network_self_link
+# }
