@@ -5,8 +5,8 @@ module "gke" {
   cluster_name               = var.cluster_name
   region                     = var.region
   network_name               = module.foundation.shared_vpc_network_name
-  subnetwork                 = module.shared-vpc-network.shared_vpc_subnets_names[0]
-  ip_range_pods              = module.shared-vpc-network.subnets_secondary_ranges
-  ip_range_services          = module.shared-vpc-network.subnets_secondary_ranges
+  subnetwork                 = var.subnetwork_1_name
+  ip_range_pods              = var.ip_range_pods
+  ip_range_services          = var.ip_range_services
   default_max_pods_per_node  = var.default_max_pods_per_node
 }

@@ -6,4 +6,7 @@ module "foundation" {
   project_name       = var.project_name
   network_name       = var.network_name
   projects           = var.projects
+  subnetwork_1_name  = var.subnetwork_1_name
+  subnetwork_2_name  = var.subnetwork_2_name
+  ip_range_pods      = var.ip_range_pods
 }

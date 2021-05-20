@@ -79,4 +79,4 @@ module "gke" {
       "default-node-pool",
     ]
   }
-}
+  }

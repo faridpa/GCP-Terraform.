@@ -57,14 +57,14 @@ module "shared-vpc-network" {
   shared_vpc_host         = true
   subnets = [
     {
-      subnet_name          = "${var.network_name}-subnet-01"
+      subnet_name          = var.subnetwork_1_name
       subnet_ip            = "10.10.0.0/21"
       subnet_region        = var.region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
     },
     {
-      subnet_name           = "${var.network_name}-subnet-02"
+      subnet_name           = var.subnetwork_2_name
       subnet_ip             = "10.10.8.0/21"
       subnet_region         = var.region
       subnet_private_access = "true"
@@ -72,7 +72,7 @@ module "shared-vpc-network" {
     },
   ]
   secondary_ranges = {
-    "${var.network_name}-subnet-01" = [
+    (var.subnetwork_1_name) = [
       {
         range_name    = "${var.network_name}-subnet-01-01"
         ip_cidr_range = "192.168.64.0/24"
@@ -82,11 +82,11 @@ module "shared-vpc-network" {
         ip_cidr_range = "192.168.65.0/24"
       },
     ]
-    "${var.network_name}-subnet-02" = [
+    (var.subnetwork_2_name) = [
       {
         range_name    = "${var.network_name}-subnet-02-01"
         ip_cidr_range = "192.168.66.0/24"
-      },
+      }
     ]
   }
   routes = local.network_routes

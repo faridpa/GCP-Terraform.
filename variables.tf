@@ -29,3 +29,6 @@ variable "pg_ha_external_ip_range" {}
 variable "num_ip_ranges" {
   type        = number
 }
+
+variable "subnetwork_1_name" {}
+variable "subnetwork_2_name" {}
