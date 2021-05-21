@@ -16,13 +16,13 @@ default_max_pods_per_node = "30"
 projects                  = ["gke-project","db-project"]
 
 // subnetwork                     = "first-network-subnet-01"
-name                           = "ios-memcache"
+memcache_name                  = "ios-memcache"
 memory_size_mb                 = "1024"
 enable_apis                    = true
 cpu_count                      = "1"
-name_redis                     = "ios-redis"
+redis_name                     = "ios-redis"
 memory_size_gb                 = "1"
-pg_ha_name                     = "pit"
+pg_ha_name                     = "pitstop"
 pg_ha_external_ip_range        = "0.0.0.0/0"
 
 num_ip_ranges                  = 3

@@ -17,11 +17,11 @@ variable "projects" {
 }
 
 // variable "subnetwork" {}
-variable "name" {}
+variable "redis_name" {}
+variable "memcache_name" {}
 variable "memory_size_mb" {}
 variable "enable_apis" {}
 variable "cpu_count" {}
-variable "name_redis" {}
 variable "memory_size_gb" {}
 variable "pg_ha_name" {}
 variable "pg_ha_external_ip_range" {}
