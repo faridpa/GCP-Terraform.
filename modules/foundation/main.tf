@@ -134,3 +134,11 @@ module "development-projects" {
                           module.shared-vpc-network
                          ]
 }
+
+module "private-service-access" {
+  source             = "../private-service-access"
+  private_svc_ranges = var.private_svc_ranges
+  project_id         = module.shared-vpc-network.project_id
+  vpc_network        = module.shared-vpc-network.network_name
+  network_self_link  = module.shared-vpc-network.network_self_link
+}

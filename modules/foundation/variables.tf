@@ -10,3 +10,4 @@ variable "projects" {
 variable "subnetwork_1_name" {}
 variable "subnetwork_2_name" {}
 variable "ip_range_pods" {}
+variable "private_svc_ranges" {}

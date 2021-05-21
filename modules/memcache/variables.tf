@@ -6,4 +6,4 @@ variable "cpu_count" {}
 variable "name" {}
 variable "network_project_id" {}
 variable "network_name" {}
-variable "network_self_link" {}
+# variable "network_self_link" {}

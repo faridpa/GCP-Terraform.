@@ -25,11 +25,7 @@ variable "cpu_count" {}
 variable "memory_size_gb" {}
 variable "pg_ha_name" {}
 variable "pg_ha_external_ip_range" {}
-
-variable "num_ip_ranges" {
-  type        = number
-}
-
 variable "subnetwork_1_name" {}
 variable "subnetwork_2_name" {}
 variable "db_tier" {}
+variable "private_svc_ranges" {}

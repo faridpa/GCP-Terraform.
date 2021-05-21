@@ -30,10 +30,6 @@ variable "address" {
   default     = "10.10.21.1"
 }
 
-variable "name" {
-  type = string
-}
-
 variable "prefix_length" {
   description = "Prefix length of the IP range reserved for Cloud SQL instances and other Private Service Access services. Defaults to /16."
   type        = number
@@ -53,3 +49,5 @@ variable "labels" {
 }
 
 variable "network_self_link" {}
+
+variable "private_svc_ranges" {}

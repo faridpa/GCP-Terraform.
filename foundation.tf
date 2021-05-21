@@ -9,4 +9,5 @@ module "foundation" {
   subnetwork_1_name  = var.subnetwork_1_name
   subnetwork_2_name  = var.subnetwork_2_name
   ip_range_pods      = var.ip_range_pods
+  private_svc_ranges = var.private_svc_ranges
 }

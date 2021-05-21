@@ -1,17 +1,18 @@
-module "private-service-access" {
-  source            = "../private-service-access"
-  name              = var.pg_ha_name
-  project_id        = var.network_project_id
-  vpc_network       = var.network_name
-  network_self_link = var.network_self_link
-}
+# module "private-service-access" {
+#   source            = "../private-service-access"
+#   name              = var.pg_ha_name
+#   project_id        = var.network_project_id
+#   vpc_network       = var.network_name
+#   network_self_link = var.network_self_link
+# }
 
 module "postgresql" {
   source                 = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
   name                   = var.pg_ha_name
   random_instance_name   = true
   database_version       = "POSTGRES_13"
-  project_id             = can(module.private-service-access.peering_completed) ? var.project_id : ""
+  # project_id           = can(module.private-service-access.peering_completed) ? var.project_id : ""
+  project_id             = var.project_id
   zone                   = var.zone
   region                 = var.region
   tier                   = var.db_tier
