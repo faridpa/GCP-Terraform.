@@ -29,3 +29,6 @@ variable "subnetwork_1_name" {}
 variable "subnetwork_2_name" {}
 variable "db_tier" {}
 variable "private_svc_ranges" {}
+variable "members" {
+  type = list(string)
+}
