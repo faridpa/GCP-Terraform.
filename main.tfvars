@@ -28,5 +28,7 @@ pg_ha_external_ip_range        = "0.0.0.0/0"
 private_svc_ranges             = 3
 db_tier                        = "db-g1-small"
 members                        = [
-    "group:devops-gp@integraldevops.com"
+    "group:devops-gp@integraldevops.com",
+    "user:farid@integraldevops.com",
+    "user:devops@integraldevops.com"
   ]
