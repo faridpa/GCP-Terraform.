@@ -6,4 +6,5 @@ module "iap_bastion" {
   network      = var.network_self_link
   subnet       = var.subnetwork_self_link
   members      = var.members
+  shielded_vm  = var.shielded_vm
 }

@@ -5,4 +5,5 @@ module "iap_bastion" {
   network_self_link    = module.foundation.shared_vpc_network_self_link
   subnetwork_self_link = module.foundation.shared_vpc_subnets_self_links[0]
   members              = var.members
-} 
+  shielded_vm          = false
+}
