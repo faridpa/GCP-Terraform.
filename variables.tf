@@ -32,3 +32,5 @@ variable "private_svc_ranges" {}
 variable "members" {
   type = list(string)
 }
+variable "cloud_router_name" {}
+variable "nat_gateway_name" {}

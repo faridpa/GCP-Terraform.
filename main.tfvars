@@ -32,3 +32,6 @@ members                        = [
     "user:farid@integraldevops.com",
     "user:devops@integraldevops.com"
   ]
+
+cloud_router_name              = "shared-vpc-router"
+nat_gateway_name               = "shared-vpc-nat-gateway"
