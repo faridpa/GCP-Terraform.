@@ -15,7 +15,7 @@ cluster_name              = "maincluster"
 default_max_pods_per_node = "30"
 projects                  = ["gke-project","db-project"]
 
-// subnetwork                     = "first-network-subnet-01"
+// subnetwork                  = "first-network-subnet-01"
 memcache_name                  = "ios-memcache"
 memory_size_mb                 = "1024"
 enable_apis                    = true
