@@ -6,7 +6,7 @@ Steps:
 1. Run Terraform to create folder, project and service account with IAM policies. Replace folder1 with any other name.
 ```
 gcloud auth application-default login
-terraform init -backend-config="prefix=folder1"
+terraform init -backend-config="prefix=shared"
 terraform plan -var 'folder_name=folder1' -var 'project_name=project1' --var-file main.tfvars
 terraform apply -var 'folder_name=folder1' -var 'project_name=project1' --var-file main.tfvars
 ```

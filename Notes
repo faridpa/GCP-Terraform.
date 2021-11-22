@@ -1,0 +1,78 @@
+Client ID: https://iap.googleapis.com/v1/oauth/clientIds/646669236126-u951vd7tkakvsvqv77qkugp9dobc9oui.apps.googleusercontent.com:handleRedirect
+
+Secret: Ffog1L_fRcIgYtAEfp0kNY10
+
+
+
+kubectl create secret generic my-secret --from-literal=client_id=646669236126-u951vd7tkakvsvqv77qkugp9dobc9oui.apps.googleusercontent.com:handleRedirect --from-literal=client_secret=Ffog1L_fRcIgYtAEfp0kNY10
+
+cat <<EOF | kubectl apply -f -
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: config-default
+  namespace: default
+spec:
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: my-secret
+EOF
+
+annotations:
+    beta.cloud.google.com/backend-config: '{"default": "config-default"}'
+
+    kubectl create secret generic kubsec \
+  --from-literal=username=tftest \
+  --from-literal=password=foobar \
+  --from-literal=database=integral
+
+kubectl create secret generic privsec \
+    --from-literal=db_host=10.149.75.3
+
+  development-db-project-c031:us-west1:integral-5e9d019c
+
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgrestest
+spec:
+  selector:
+    matchLabels:
+      app: postgrestest
+  template:
+    metadata:
+      labels:
+        app: postgrestest
+    spec:
+      containers:
+      - name: postgrescontaier
+        image: tmaier/postgresql-client
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: kubsec
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: kubsec
+              key: password
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: kubsec
+              key: database
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: privsec
+              key: db_host
+EOF 
+
+kubectl delete deployment postgrestest
+
+
+kubectl run pgsql-postgresql-client --rm --tty -i --restart='Never' --namespace default --image docker.io/bitnami/postgresql:11.7.0-debian-10-r9 --env="PGPASSWORD=foobar" --command -- psql testdb --host 10.149.75.3 -U tftest -d integral -p 5432

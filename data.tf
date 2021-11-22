@@ -16,3 +16,8 @@ data "google_service_account_access_token" "default" {
 data "google_client_openid_userinfo" "thenewme" {
   // provider = google-beta
 }
+
+data "google_compute_zones" "available" {
+  region = var.region
+  status = "UP"
+}
